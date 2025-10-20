@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="logo">Pokedex</h1>
+        <header>
+            <form class="searchbox">
+                <div>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Pokemon name,number or type"> 
+                </div> 
+               <button type="submit" id="searchBtn">Search</button>
+            </form>
+            <div class="sortFilter">
+                <select name="sort" id="sort">
+                    <option value="number-asc">Lowest Number First</option>
+                    <option value="number-desc">Highest Number First</option>
+                    <option value="name-asc">Alphabetically (A-Z)</option>
+                    <option value="name-desc">Alphabetically (Z-A)</option>
+                </select>
+                <button type="button" id="filterBtn">
+                    <i class="fa-solid fa-filter"></i> 
+                    Filters
+                </button>
+            </div>
+        </header>
+        <div class="filterMenu">
+            <div class="filter-header">
+                <h2>Filters</h2>
+                <button id="close-filters">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="filter-options">
+                <h3>Types</h3>
+                <div>
+                    <input type="checkbox" id="banana" name="fruit" value="banana">
+                    <label for="banana">Banana</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="cherry" name="fruit" value="cherry">
+                    <label for="cherry">Cherry</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="date" name="fruit" value="date">
+                    <label for="date">Date</label>
+                </div>
+                <h3>Height</h3>
+                <div>
+                    <input type="radio" id="short" name="height" value="short">
+                    <label for="short">Short</label>
+                </div>
+                <div>
+                    <input type="radio" id="medium" name="height" value="medium">
+                    <label for="medium">Medium</label>
+                </div>
+                <div>
+                    <input type="radio" id="tall" name="height" value="tall">
+                    <label for="tall">Tall</label>
+                </div>
+            </div>
+            <div class="filter-footer">
+                <button id="reset-filters">Reset Filters</button>
+                <button id="apply-filters">Apply Filters</button>
+        </article>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

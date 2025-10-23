@@ -28,14 +28,16 @@ body{
     padding: 20px;
 }
 .logo{
-    font-size: var(--largeHeading);
-    color: var(--primaryColor);
-    text-align: start;
+    display: flex;
+    align-items: end;
+    justify-content: flex-start;
+    gap: 2px;
+    margin-bottom: 20px;
 }
 header{
     width: 100%;
 }
-.searchbox{
+#searchbox{
     display: flex;
     color: var(--primaryColor);
     justify-content: space-between;
@@ -47,28 +49,31 @@ header{
     margin-bottom: 20px;
     overflow: hidden;
 }
-.searchbox div{
+#searchbox div{
     display: flex;
     align-items: center;
     gap: 10px;
     width: 100%;
 }
-.searchbox input{
+#searchbox input{
     padding: 8px;
    border:none;
    outline: none;
    width: 100%;
+   font-size: var(--mediumBody);
 }
 ::placeholder{
     color: var(--primaryColor);
-    opacity: 0.5;
+    font-size: var(--mediumBody);
+    font-weight: 500;
 }
 #searchBtn{
     background-color: var(--buttonColor);
     border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
+    border-radius: 8px;
+    padding: 5px 20px;
     font-size: var(--buttonFontSize);
+    font-weight: bold;
     cursor: pointer;
     color:inherit
 }
@@ -83,23 +88,44 @@ header{
 #sort, ::picker(select){
     appearance: base-select;
 }
-::picker(select){
-    border-radius: 0 0 8px 8px;
-}
-option::checkmark {
-    order:1;
-    margin-left: auto;
-}
+
 #sort{
     padding: 5px 10px;
-    border-radius: 5px;
-    font-size: var(--smallSubtext);
+    border-radius: 8px;
+    border: var(--gray) 1px solid;
+    font-size: var(--mediumBody);
+    font-weight: bold;
     background-color: var(--whiteBg);
     outline: none;
 }
+::picker(select){
+    font-size: var(--smallSubtext);
+    font-weight:normal;
+    margin-top: 5px;
+    border-radius:8px;
+}
+
+::picker-icon{
+    content: url(chevron.svg);
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+}
+option{
+    border-radius: 8px;
+    gap: 8px;
+    padding: 8px;
+    margin: 5px;
+}
+
+option::checkmark {
+    order:1;
+    content: url(check.svg);
+    margin-left: auto;
+}
 #filterBtn{
     border: 1px solid var(--gray);
-    border-radius: 50px;
+    border-radius: 20px;
     padding: 5px 10px;
     font-size: var(--buttonFontSize);
     cursor: pointer;
@@ -146,15 +172,18 @@ option::checkmark {
     color: black;
     border-radius: 50%;
 }
-.filter-options{
+#filter-options{
     display:grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
-.filter-options h3{
+#filter-options h3{
     grid-column: span 2;
+    color: var(--gray);
+    font-size: var(--mediumBody);
+    font-weight: 500;
 }
-.filter-options div{
+#filter-options div{
     display: flex;
     align-items: center;
     gap: 5px;
@@ -172,4 +201,105 @@ option::checkmark {
     border-radius: 5px;
     font-size: var(--buttonFontSize);
     cursor: pointer;
+}
+.filter-footer button:hover{
+    background-color: var(--primaryColor);
+    color: white;
+}
+
+/* Main container */
+
+#pokemonContainer{
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.pokemon-card{
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(148, 85, 85, 0.1);
+    margin-top: 50px;
+    padding: 10px;
+    text-align: start;
+}
+
+.pokemon-card img{
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    left:50%;
+    transform: translate(-50%, -60%);
+}
+.pokemon-card h3{
+    text-transform: capitalize; /* Capitalize first letter of name */
+    margin-top: 40px;
+    font-size: var(--mediumHeading);
+    color: white;
+    margin-bottom:0;
+}
+.pokemon-card p{
+    margin: 5px 0;
+    color: white;
+    opacity: 0.8;
+    font-size: var(--smallSubtext);
+}
+.typeList{
+    position: relative;
+}
+.typeList button{
+    position: relative;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: var(--smallSubtext);
+    font-weight: 500;
+}
+.typeList button:hover{
+    opacity: 0.6;
+}
+
+.typeList button img{
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+}
+.typeList button span{
+    margin-left: 10px;
+    text-transform: capitalize;
+}
+.pokemon-card svg{
+    position: absolute;
+    bottom: -35px;
+    left: -20px;
+    z-index: 0;
+}
+
+.no-results {
+    grid-area: 1 / 1 / -1 / -1;
+    text-align: center;
+    font-size: var(--mediumHeading);
+    color: var(--gray);
+    margin-top: 50px;
+}
+
+.more-info{
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--whiteBg);
+    max-width: 700px;
+    width: 100%;
+    height: 600px;
+    text-align: center;
+    border-radius: 20px;
+    
 }

@@ -1,4 +1,4 @@
-import { getPokemons } from "./api.js";
+import { getPokemons, getPokemon} from "./api.js";
 import { getBackgroundColor,getAbilityColor} from "./pokemonColor.js";
 
 getPokemons();
@@ -11,7 +11,6 @@ const pokemonContainer = document.getElementById('pokemonContainer');
 const sortSelect = document.getElementById('sort');
 const typeFilterContainer = document.getElementById('filter-options');
 const applyFiltersBtn = document.getElementById('apply-filters');
-
 const searchInput = document.getElementById('search-input');
 const searchBox = document.getElementById('searchbox');
 
@@ -130,7 +129,6 @@ filterBtn.addEventListener('click', () => {
 
 
 
-
 async function displayPokemons(callback) {
     pokemonContainer.innerHTML = '';
     // Fetch and display pokemons based on filters
@@ -143,6 +141,7 @@ async function displayPokemons(callback) {
             types.push(...pokemonData.types.map(t => t.type.name));
             const div = document.createElement('div');
             div.classList.add('pokemon-card');
+            div.id = `pokemon-${pokemonData.id}`;
             div.style.backgroundColor = getBackgroundColor(pokemonData.types[0].type.name);
             const formattedId = String(pokemonData.id).padStart(3, '0');
             const typeList = pokemonData.types.map(t => `
@@ -187,16 +186,76 @@ sortSelect.addEventListener('change', async e => {
     }
   });
 
-  pokemonContainer.addEventListener('click', async (e) => {
-    const typeBtn = e.target.closest('.pokemon-card').querySelector('button[id^="typeBtn-"]');
-    if (typeBtn) {
+
+
+
+
+
+
+
+
+  async function renderMoreInfo(id) {
+    try{
+        const pokemon = await getPokemon(id);
         const moreInfoDiv = document.createElement('div');
         moreInfoDiv.classList.add('more-info');
-        moreInfoDiv.style.backgroundColor = getAbilityColor(typeBtn.id.split('-').pop());
+        moreInfoDiv.classList.toggle('active');
+        moreInfoDiv.style.backgroundColor = getBackgroundColor(pokemon.types[0].type.name);
+        const formattedId = String(pokemon.id).padStart(3, '0');
+        const typeList = pokemon.types.map(t => `
+                <button id="typeBtn-${formattedId}-${t.type.name}" style="background-color: ${getAbilityColor(t.type.name)}">
+                <img src="/svg/${t.type.name}.svg" alt="${t.type.name} icon"> 
+                <span>${t.type.name}</span>
+            </button>`).join(' ');
+
         moreInfoDiv.innerHTML = `
-            <h2>More about ${typeBtn.textContent}</h2>
-            <p>Here you can find more information about ${typeBtn.textContent}.</p>
+            <svg id = "moreInfoCloseBtn" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.70679 16.707C9.51926 16.8944 9.26495 16.9998 8.99979 16.9998C8.73462 16.9998 8.48031 16.8944 8.29279 16.707L2.29279 10.707C2.10532 10.5194 2 10.2651 2 9.99997C2 9.73481 2.10532 9.4805 2.29279 9.29297L8.29279 3.29297C8.48139 3.11081 8.73399 3.01002 8.99619 3.01229C9.25838 3.01457 9.5092 3.11974 9.6946 3.30515C9.88001 3.49056 9.98518 3.74137 9.98746 4.00357C9.98974 4.26577 9.88894 4.51837 9.70679 4.70697L5.41379 8.99997H16.9998C17.265 8.99997 17.5194 9.10533 17.7069 9.29286C17.8944 9.4804 17.9998 9.73475 17.9998 9.99997C17.9998 10.2652 17.8944 10.5195 17.7069 10.7071C17.5194 10.8946 17.265 11 16.9998 11H5.41379L9.70679 15.293C9.89426 15.4805 9.99957 15.7348 9.99957 16C9.99957 16.2651 9.89426 16.5194 9.70679 16.707Z" fill="white"/>
+            </svg>
+            <div class = "moreInfoHeader" >
+                <img src="${pokemon.sprites.front_default}" alt="pokemon.name">
+                <div>
+                    <p>#${formattedId}</p>
+                    <h2>${pokemon.name}</h2>
+                    <div class="typeList">${typeList}</div>
+                </div>
+            </div>
+            <div class="moreInfoContent">
+                <div class="moreInfoBtnContainer">
+                    <button class = "moreInfoBtn active" id="aboutBtn">About</button>
+                    <button class = "moreInfoBtn" id="statsBtn">Base stats</button>
+                    <button class = "moreInfoBtn" id="evolutionBtn">Evolution</button>
+                </div>
+                <div class="moreInfoMainContainer">
+                    <li>Species <span>types are here</span></li>
+                    <li>Height <span>${pokemon.height}</span></li>
+                    <li>Weight <span>${pokemon.width}</span></li>
+                    <li>Abilities <span>ab</span></li>
+                </div>
+            </div>
         `
         pokemonContainer.appendChild(moreInfoDiv);
+
+        const closeBtn = moreInfoDiv.querySelector("#moreInfoCloseBtn");
+        closeBtn.addEventListener("click", () => {
+        moreInfoDiv.classList.remove("active");
+        });
+
+    } catch(error){
+        console.log("Error fetching pokemon", error)
+    }
+  };
+
+  
+
+  
+
+
+  pokemonContainer.addEventListener('click', async (e) => {
+    const pokemonCard = e.target.closest('.pokemon-card');
+    if(pokemonCard){
+        const pokemonId = e.target.closest('.pokemon-card')?.id.split('-').pop();
+        renderMoreInfo(pokemonId);
     }
 });
+

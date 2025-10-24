@@ -200,7 +200,8 @@ sortSelect.addEventListener('change', async e => {
         const moreInfoDiv = document.createElement('div');
         moreInfoDiv.classList.add('more-info');
         moreInfoDiv.classList.toggle('active');
-        moreInfoDiv.style.backgroundColor = getBackgroundColor(pokemon.types[0].type.name);
+        const bgClr = getBackgroundColor(pokemon.types[0].type.name);
+        moreInfoDiv.style.backgroundColor = bgClr;
         const formattedId = String(pokemon.id).padStart(3, '0');
         const typeList = pokemon.types.map(t => `
                 <button id="typeBtn-${formattedId}-${t.type.name}" style="background-color: ${getAbilityColor(t.type.name)}">
@@ -213,6 +214,15 @@ sortSelect.addEventListener('change', async e => {
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M9.70679 16.707C9.51926 16.8944 9.26495 16.9998 8.99979 16.9998C8.73462 16.9998 8.48031 16.8944 8.29279 16.707L2.29279 10.707C2.10532 10.5194 2 10.2651 2 9.99997C2 9.73481 2.10532 9.4805 2.29279 9.29297L8.29279 3.29297C8.48139 3.11081 8.73399 3.01002 8.99619 3.01229C9.25838 3.01457 9.5092 3.11974 9.6946 3.30515C9.88001 3.49056 9.98518 3.74137 9.98746 4.00357C9.98974 4.26577 9.88894 4.51837 9.70679 4.70697L5.41379 8.99997H16.9998C17.265 8.99997 17.5194 9.10533 17.7069 9.29286C17.8944 9.4804 17.9998 9.73475 17.9998 9.99997C17.9998 10.2652 17.8944 10.5195 17.7069 10.7071C17.5194 10.8946 17.265 11 16.9998 11H5.41379L9.70679 15.293C9.89426 15.4805 9.99957 15.7348 9.99957 16C9.99957 16.2651 9.89426 16.5194 9.70679 16.707Z" fill="white"/>
             </svg>
             <div class = "moreInfoHeader" >
+                <svg id="decor-svg-0" width="151" height="127" viewBox="0 0 151 127" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="116.397" cy="9.37923" r="50.8072" fill="white" fill-opacity="0.08"/>
+                <path d="M232.794 -5.86279C225.322 -63.4885 176.058 -108 116.396 -108C56.7354 -108 7.4723 -63.4884 0 -5.86279H42.8584C49.9022 -40.0247 80.1499 -65.7095 116.397 -65.7095C152.645 -65.7094 182.893 -40.0247 189.937 -5.86279H232.794ZM116.396 126.758C176.058 126.758 225.321 82.2471 232.794 24.6216H189.937C182.893 58.7832 152.645 84.4672 116.397 84.4673C80.15 84.4673 49.9022 58.7833 42.8584 24.6216H0C7.47239 82.247 56.7355 126.758 116.396 126.758Z" fill="white" fill-opacity="0.08"/>
+                </svg>
+                <svg id="decor-svg-1" width="100" height="200" viewBox="0 0 130 235" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="13.399" cy="117.38" r="50.8072" fill="white" fill-opacity="0.08"/>
+                <path d="M129.796 102.138C122.324 44.512 73.0596 6.10352e-05 13.3984 0C-46.2626 0.000152588 -95.5257 44.5121 -102.998 102.138H-60.1396C-53.0959 67.9758 -22.8482 42.291 13.3994 42.291C49.6469 42.2911 79.8947 67.9758 86.9385 102.138H129.796ZM13.3984 234.759C73.0595 234.759 122.323 190.248 129.796 132.622H86.9385C79.8946 166.784 49.6469 192.468 13.3994 192.468C-22.8481 192.468 -53.0958 166.784 -60.1396 132.622H-102.998C-95.5257 190.247 -46.2626 234.759 13.3984 234.759Z" fill="white" fill-opacity="0.08"/>
+                </svg>
+
                 <img src="${pokemon.sprites.front_default}" alt="pokemon.name">
                 <div>
                     <p>#${formattedId}</p>
@@ -222,34 +232,75 @@ sortSelect.addEventListener('change', async e => {
             </div>
             <div class="moreInfoContent">
                 <div class="moreInfoBtnContainer">
-                    <button class = "moreInfoBtn active" id="aboutBtn">About</button>
+                    <button class = "moreInfoBtn active" id="aboutBtn" clicked>About</button>
                     <button class = "moreInfoBtn" id="statsBtn">Base stats</button>
                     <button class = "moreInfoBtn" id="evolutionBtn">Evolution</button>
                 </div>
                 <div class="moreInfoMainContainer">
-                    <li>Species <span>types are here</span></li>
-                    <li>Height <span>${pokemon.height}</span></li>
-                    <li>Weight <span>${pokemon.width}</span></li>
-                    <li>Abilities <span>ab</span></li>
                 </div>
             </div>
         `
         pokemonContainer.appendChild(moreInfoDiv);
 
+        const moreInfoBtnContainer = moreInfoDiv.querySelector('.moreInfoBtnContainer');
+        const moreInfoMainContainer = moreInfoDiv.querySelector('.moreInfoMainContainer');
+
+        function displayAbout() {
+            moreInfoMainContainer.innerHTML = `
+                <div class="about">
+                    <p><strong>Species</strong> <span>${pokemon.types.map(t => t.type.name).join(', ')}</span></p>
+                    <p><strong>Height</strong> <span>${pokemon.height}</span> </p>
+                    <p><strong>Weight</strong><span>${pokemon.weight}</span> </p>
+                    <p><strong>Abilities</strong> <span>${pokemon.abilities.map(a => a.ability.name).join(', ')}</span></p>
+                </div>
+            `;
+        }
+
+        function displayStats() {
+            const statsHtml = pokemon.stats.map(s =>
+                `
+                <div class="stat-row">
+                    <span class="stat-name">${s.stat.name}</span>
+                    <span class="stat-value">${s.base_stat}</span>
+                    <input class="stat-range" type="range" min="0" max="100" value="${s.base_stat}" disabled
+                    style=" background: linear-gradient(to right, ${bgClr} ${s.base_stat}% ,  #e0e0e0 1%);"/>
+                </div>
+            `).join('');
+            moreInfoMainContainer.innerHTML = `<div class="stats">${statsHtml}</div>`;
+        }
+
+        function displayEvolution() {
+            moreInfoMainContainer.innerHTML = `<div class="evolution">This Pokémon doesn't Evolve</div>`;
+        }
+
+        moreInfoBtnContainer.addEventListener('click', (evt) => {
+            const btn = evt.target.closest('.moreInfoBtn');
+            if (!btn) return;
+            // toggle active class
+            moreInfoBtnContainer.querySelectorAll('.moreInfoBtn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (btn.id === "aboutBtn") {
+                displayAbout();
+            } else if (btn.id === "statsBtn") {
+                displayStats();
+            } else if (btn.id === "evolutionBtn") {
+                displayEvolution();
+            }
+        });
+        displayAbout();
         const closeBtn = moreInfoDiv.querySelector("#moreInfoCloseBtn");
         closeBtn.addEventListener("click", () => {
-        moreInfoDiv.classList.remove("active");
+            moreInfoDiv.classList.remove("active");
+            moreInfoDiv.remove();
         });
-
+        moreInfoDiv.addEventListener("mouseleave", () =>{
+            moreInfoDiv.classList.remove("active");
+            moreInfoDiv.remove();
+        })
     } catch(error){
         console.log("Error fetching pokemon", error)
     }
   };
-
-  
-
-  
-
 
   pokemonContainer.addEventListener('click', async (e) => {
     const pokemonCard = e.target.closest('.pokemon-card');

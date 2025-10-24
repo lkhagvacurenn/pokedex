@@ -247,6 +247,9 @@ option::checkmark {
 }
 .typeList{
     position: relative;
+    display: flex;
+    gap:5px;
+    flex-wrap: nowrap;
 }
 .typeList button{
     position: relative;
@@ -258,9 +261,6 @@ option::checkmark {
     padding: 5px 15px;
     font-size: var(--smallSubtext);
     font-weight: 500;
-}
-.typeList button:hover{
-    opacity: 0.6;
 }
 
 .typeList button img{
@@ -292,14 +292,14 @@ option::checkmark {
 
 .more-info{
     display: none;
-    position: absolute;
-    top: 5%;
+    position: fixed;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform:translate(-50%,-50%);
     background-color: var(--whiteBg);
     width: fit-content;
     border-radius: 20px;
-    box-shadow: 8px 8px 8px rgba(200, 100, 85, 0.1);
+    box-shadow: 0.3rem 0.3rem 1rem var(--primaryColor);
     overflow: hidden;
 }
 .more-info.active{
@@ -310,12 +310,25 @@ option::checkmark {
 }
 .moreInfoHeader {
     display: flex;
+    position: relative;
     padding: 0px 30px;
     justify-content: center;
     margin-top: 20px;
     color: var(--whiteBg);
     text-align: left;
     text-transform: capitalize
+}
+
+#decor-svg-0{
+    position: absolute;
+    right: -10%;
+    top: -60%;
+}
+#decor-svg-1{
+    position: absolute;
+    left: -10%;
+    bottom: 0%;
+    z-index: 1;
 }
 .moreInfoHeader img{
     width: 180px;
@@ -342,4 +355,56 @@ option::checkmark {
 
 .moreInfoMainContainer{
     padding: 10px 30px;
+}
+
+input[type="range"] {
+    height: 8px;
+  appearance: none;
+  background: linear-gradient(to right, var(--primaryColor) 50%, #e0e0e0 50%);
+  border-radius: 5px;
+  outline: none;
+}
+
+/* hide thumb */
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+}
+
+/* disable interactivity (acts like progress bar) */
+input[type="range"]:disabled {
+  pointer-events: none;
+}
+
+.stat-row{
+    display: flex;
+    align-items: center;
+    
+}
+.stat-range{
+    flex-basis: 45%;
+}
+.stat-name{
+    flex-basis: 45%;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+.stat-value{
+    flex-basis: 10%;
+}
+.about p{
+    display: grid;
+    grid-template-columns: 80px 1fr;
+}
+
+
+@media  screen and (max-width:480px) {
+    .moreInfoHeader{
+        padding: 0 10px;
+    }
+    .moreInfoBtnContainer{
+        padding: 0 10px;
+    }
+    .moreInfoMainContainer{
+        padding: 10px 10px;
+    }
 }

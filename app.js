@@ -1,7 +1,17 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const pokemons = JSON.parse(localStorage.getItem('pokemons'));
+    if(pokemons)
+         displayPokemons(() => Promise.resolve(pokemons));
+    else displayPokemons(getPokemons);
+})
+
+
 import { getPokemons, getPokemon} from "./api.js";
 import { getBackgroundColor,getAbilityColor} from "./pokemonColor.js";
 
 getPokemons();
+
+var pokemonsArr = []; // it will keep rendered pokemons data [id,name,url]
 
 const filterMenu = document.querySelector('.filterMenu');
 const filterBtn = document.getElementById('filterBtn');
@@ -15,28 +25,34 @@ const searchInput = document.getElementById('search-input');
 const searchBox = document.getElementById('searchbox');
 const logo = document.getElementById('logo');
 
+// When press logo it will render all pokemons 
 logo.addEventListener('click' , () => {
     displayPokemons(getPokemons);
 })
 
+
+
+//Search Engine 
 searchBox.addEventListener('submit', async (e) => {
+    //whenever it submits it won't refresh the page
     e.preventDefault();
-    const query = searchInput.value.toLowerCase().trim();
+    const query = searchInput.value.toLowerCase().trim(); //to get search input lowercase value; trim() cuts spaces
     try{
         const allPokemons = await getPokemons();
         console.log(allPokemons);
-        pokemonsArr = [];
+        pokemonsArr = []; // need to remove old datas
         console.log(pokemonsArr);
         const filteredPokemons = [];
         for (const pokemon of allPokemons) {
             const pokemonRes = await fetch(pokemon.url);
-            const pokemonData = await pokemonRes.json();      
+            const pokemonData = await pokemonRes.json(); 
+            //check query mathces id name or type     
             if(pokemonData.name.includes(query) || String(pokemonData.id) === query || pokemonData.types.some(t => t.type.name === query)){
-                filteredPokemons.push(pokemon);
-               
+                //above some function used to types array includes at least one matching type
+                filteredPokemons.push(pokemon);            
             } 
         }
-        console.log(pokemonsArr);
+        // If there is no match It will render no match result 
         if(filteredPokemons.length === 0){
             pokemonContainer.innerHTML = `
             <div class="no-results">
@@ -49,7 +65,7 @@ searchBox.addEventListener('submit', async (e) => {
             `;
             return;
         }
-        displayPokemons(() => Promise.resolve(filteredPokemons));
+        displayPokemons(() => Promise.resolve(filteredPokemons)); // displayPokemons is async function so we need to pass promise anyway.
     }catch(error){
         console.error("Error fetching pokemons for search:", error);
     }
@@ -57,11 +73,10 @@ searchBox.addEventListener('submit', async (e) => {
 
 
 
-
+//in filterMenu div it will help to render unduplicated types
 function renderTypeOptions(types) {
-  // dedupe
-  typeFilterContainer.innerHTML = `<h3>Type</h3>`; // reset content
-  const unique = [...new Set(types)].sort();
+  typeFilterContainer.innerHTML = `<h3>Type</h3>`; //It will reset content
+  const unique = [...new Set(types)].sort(); // Set(types) will remove duplicated types and ... helps to push types to array. Then sort will sort it A-Z
   for (const type of unique) {
 
     const wrapper = document.createElement('div');
@@ -69,43 +84,43 @@ function renderTypeOptions(types) {
       <input type="checkbox" id="type-${type}" name="type" value="${type}">
       <label for="type-${type}">${type}</label>
     `;
-    typeFilterContainer.appendChild(wrapper);
+    typeFilterContainer.appendChild(wrapper); 
   }
 }
-
+//It's function that remove all checked types
 resetFiltersBtn.addEventListener('click', () => {
-    const checkboxes = filterMenu.querySelectorAll('input[type="checkbox"]');
-
+    const checkboxes = filterMenu.querySelectorAll('input[type="checkbox"]'); 
     checkboxes.forEach(checkbox => {
-        checkbox.checked = false;
+        checkbox.checked = false; // remove all checks even it was not checked just to make sure (actually I got lazy to write if statement )
     });
 });
 
 
-
+//Apply filters
 applyFiltersBtn.addEventListener('click', async () => {
     const selectedTypes = [];
     const checkboxes = filterMenu.querySelectorAll('input[type="checkbox"]');
 
+    //get all selected types
     checkboxes.forEach(checkbox => {
         if (checkbox.checked) {
             selectedTypes.push(checkbox.value);
         }
     });
     try{
-        const allPokemons = pokemonsArr;
-        pokemonsArr =[];
+        const allPokemons = pokemonsArr; //just get pokemons which were rendered 
+        pokemonsArr =[]; // then we clean pokemonsArr;
         const filteredPokemons = [];
 
         for (const pokemon of allPokemons) {
             const pokemonRes = await fetch(pokemon.url);
             const pokemonData = await pokemonRes.json();
-            const types = pokemonData.types.map(t => t.type.name);
+            const types = pokemonData.types.map(t => t.type.name); //Get types of the pokemon (each pokemon)
+            console.log(types);
             if (selectedTypes.some(type => types.includes(type))) {
                 filteredPokemons.push(pokemon);
             }
         }
-        console.log("Filtered Pokemons:", filteredPokemons);
         filterMenu.classList.toggle('active');
         displayPokemons(() => Promise.resolve(filteredPokemons));
     }
@@ -114,39 +129,38 @@ applyFiltersBtn.addEventListener('click', async () => {
     }
 });
 
-
-
-
-
+//close button that close filter menu
 closeFiltersBtn.addEventListener('click', () => {
     filterMenu.classList.toggle('active');
 });
 
-
-// when mouse leaves
+// when mouse leaves filter menu will be closed as well
 filterMenu.addEventListener('mouseleave', () => {
     filterMenu.classList.remove('active');
 });
 
-
-
-
-
+//when click filter button it will open filter menu
 filterBtn.addEventListener('click', () => {
     filterMenu.classList.toggle('active');
 });
 
 
-var pokemonsArr = [];
+// it will helps format ID like #001;
+function formattedId (id){
+    return `#${String(id).padStart(3, '0')}`;
+}
 
-async function displayPokemons(callback) {
+
+
+
+
+//main function that renders pokemons
+async function displayPokemons(callback) { //we are gonna pass different functions that return Promise 
     pokemonContainer.innerHTML = `<p>loading</p>`;
-    // Fetch and display pokemons based on filters
     try{
-        
         const pokemons = await callback();
-        const types = [];
-        pokemonContainer.innerHTML = ``;
+        const types = []; // we will pass this array to renderTypeOptions
+        pokemonContainer.innerHTML = ``; // clean main container that means remove old contents
         for (const p of pokemons){
             const pokemonRes = await fetch(p.url);
             const pokemonData = await pokemonRes.json();
@@ -160,16 +174,15 @@ async function displayPokemons(callback) {
             div.classList.add('pokemon-card');
             div.id = `pokemon-${pokemonData.id}`;
             div.style.backgroundColor = getBackgroundColor(pokemonData.types[0].type.name);
-            const formattedId = String(pokemonData.id).padStart(3, '0');
             const typeList = pokemonData.types.map(t => `
-                <button id="typeBtn-${formattedId}-${t.type.name}" style="background-color: ${getAbilityColor(t.type.name)}">
+                <button class="typeBtn" style="background-color: ${getAbilityColor(t.type.name)}">
                 <img src="/svg/${t.type.name}.svg" alt="${t.type.name} icon"> 
                 <span>${t.type.name}</span>
             </button>`).join(' ');
             div.innerHTML = `
                 <img src="${pokemonData.sprites.other.dream_world.front_default}" alt="${pokemonData.name}">
                 <h3>${pokemonData.name}</h3>
-                <p>#${formattedId}</p>
+                <p>${formattedId(pokemonData.id)}</p>
                 <svg width="98" height="109" viewBox="0 0 98 109" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M97.2012 68.0928C92.2194 29.6749 59.3766 0.000213623 19.6016 0C-20.1735 0.000106812 -53.0172 29.6748 -57.999 68.0928H-29.4258C-24.7296 45.3177 -4.5631 28.1943 19.6025 28.1943C43.7678 28.1947 63.9329 45.318 68.6289 68.0928H97.2012ZM19.6016 156.51C59.3768 156.51 92.2197 126.834 97.2012 88.416H68.6289C63.9332 111.191 43.7681 128.315 19.6025 128.315C-4.5634 128.315 -24.7299 111.192 -29.4258 88.416H-57.999C-53.0176 126.834 -20.1738 156.51 19.6016 156.51Z" fill="white" fill-opacity="0.16"/>
                 </svg>
@@ -177,16 +190,13 @@ async function displayPokemons(callback) {
                 
             `;
             pokemonContainer.appendChild(div);
+            saveData();
         }
         renderTypeOptions(types);
     }catch(error){
         console.error("Error fetching pokemons:", error);
     }
 }
-
-displayPokemons(getPokemons);
-
-
 
 
 sortSelect.addEventListener('change',e => {
@@ -210,15 +220,14 @@ sortSelect.addEventListener('change',e => {
 
   async function renderMoreInfo(id) {
     try{
-        const pokemon = await getPokemon(id);
+        const pokemon = await getPokemon(id); //it will get matching pokemon info
         const moreInfoDiv = document.createElement('div');
         moreInfoDiv.classList.add('more-info');
         moreInfoDiv.classList.toggle('active');
         const bgClr = getBackgroundColor(pokemon.types[0].type.name);
         moreInfoDiv.style.backgroundColor = bgClr;
-        const formattedId = String(pokemon.id).padStart(3, '0');
         const typeList = pokemon.types.map(t => `
-                <button id="typeBtn-${formattedId}-${t.type.name}" style="background-color: ${getAbilityColor(t.type.name)}">
+                <button class="typeBtn" style="background-color: ${getAbilityColor(t.type.name)}">
                 <img src="/svg/${t.type.name}.svg" alt="${t.type.name} icon"> 
                 <span>${t.type.name}</span>
             </button>`).join(' ');
@@ -239,7 +248,7 @@ sortSelect.addEventListener('change',e => {
 
                 <img src="${pokemon.sprites.other.dream_world.front_default}" alt="pokemon.name">
                 <div>
-                    <p>#${formattedId}</p>
+                    <p>${formattedId(pokemon.id)}</p>
                     <h2>${pokemon.name}</h2>
                     <div class="typeList">${typeList}</div>
                 </div>
@@ -281,15 +290,16 @@ sortSelect.addEventListener('change',e => {
                     style=" background: linear-gradient(to right, ${bgClr} ${s.base_stat}% ,  #e0e0e0 1%);"/>
                 </div>
             `).join('');
-            moreInfoMainContainer.innerHTML = `<div class="stats">${statsHtml}</div>`;
+            moreInfoMainContainer.innerHTML = `${statsHtml}`;
         }
 
         function displayEvolution() {
             moreInfoMainContainer.innerHTML = `<div class="evolution">This Pokémon doesn't Evolve</div>`;
         }
 
-        moreInfoBtnContainer.addEventListener('click', (evt) => {
-            const btn = evt.target.closest('.moreInfoBtn');
+        //toggle more information's sub menus
+        moreInfoBtnContainer.addEventListener('click', (e) => {
+            const btn = e.target.closest('.moreInfoBtn');
             if (!btn) return;
             // toggle active class
             moreInfoBtnContainer.querySelectorAll('.moreInfoBtn').forEach(b => b.classList.remove('active'));
@@ -303,12 +313,16 @@ sortSelect.addEventListener('change',e => {
             }
         });
         displayAbout();
+
+        //close modal when press close modal button
         const closeBtn = moreInfoDiv.querySelector("#moreInfoCloseBtn");
         closeBtn.addEventListener("click", () => {
             moreInfoDiv.classList.remove("active");
             document.body.style.backgroundColor ="#F5F7FB";
             moreInfoDiv.remove();
         });
+
+        //close modal when mouse leave
         moreInfoDiv.addEventListener("mouseleave", () =>{
             moreInfoDiv.classList.remove("active");
             document.body.style.backgroundColor ="#F5F7FB";
@@ -319,6 +333,7 @@ sortSelect.addEventListener('change',e => {
     }
   };
 
+  //open modal
   pokemonContainer.addEventListener('click', async (e) => {
     const pokemonCard = e.target.closest('.pokemon-card');
     if(pokemonCard){
@@ -328,3 +343,6 @@ sortSelect.addEventListener('change',e => {
     } 
 });
 
+function saveData() {
+    localStorage.setItem('pokemons', JSON.stringify(pokemonsArr));
+}

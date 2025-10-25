@@ -85,7 +85,7 @@ header{
     display: flex;
     justify-content: space-between;
 }
-#sort, ::picker(select){
+#sort, ::picker(select){ /*it is select's header I mean selected option*/
     appearance: base-select;
 }
 
@@ -106,19 +106,19 @@ header{
 }
 
 ::picker-icon{
-    content: url(chevron.svg);
+    content: url(chevron.svg); /* picker's option like V */
     width: 12px;
     height: 12px;
     margin-right: 5px;
 }
-option{
+option{  /*dropdown*/
     border-radius: 8px;
     gap: 8px;
     padding: 8px;
     margin: 5px;
 }
 
-option::checkmark {
+option::checkmark { /*checkmark selected option's icon like ✅*/
     order:1;
     content: url(check.svg);
     margin-left: auto;
@@ -174,7 +174,7 @@ option::checkmark {
 }
 #filter-options{
     display:grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /*1 murund 2 bagana*/
     gap: 10px;
 }
 #filter-options h3{
@@ -212,7 +212,7 @@ option::checkmark {
 #pokemonContainer{
     margin-top: 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /*at least 200px width columns if there will space it will fill empthy columns*/
     gap: 20px;
 }
 
@@ -230,7 +230,7 @@ option::checkmark {
     object-fit: cover;
     position: absolute;
     left:50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); /*it will center item */
 }
 .pokemon-card h3{
     text-transform: capitalize; /* Capitalize first letter of name */
@@ -286,7 +286,7 @@ option::checkmark {
 }
 
 .no-results {
-    grid-area: 1 / 1 / -1 / -1;
+    grid-area: 1 / 1 / -1 / -1; /*Elements that should stretch across the whole grid*/
     text-align: center;
     font-size: var(--mediumHeading);
     color: var(--gray);
@@ -367,42 +367,37 @@ option::checkmark {
 }
 
 input[type="range"] {
-    height: 8px;
-  appearance: none;
-  background: linear-gradient(to right, var(--primaryColor) 50%, #e0e0e0 50%);
+    height: 8px; /* giving height in order to display slider runner*/
+  appearance: none; /*basic appearance arilgana*/
   border-radius: 5px;
   outline: none;
 }
 
 /* hide thumb */
-input[type="range"]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb { /*range thumb arilgana*/
   appearance: none;
 }
 
-/* disable interactivity (acts like progress bar) */
+/* acts like progress bar */
 input[type="range"]:disabled {
-  pointer-events: none;
+  pointer-events: none; /*no pointer event, even can't change range*/
 }
 
 .stat-row{
-    display: flex;
+    display: grid;
+    grid-template-columns: 45% 10% 45%;
     align-items: center;
     
 }
-.stat-range{
-    flex-basis: 45%;
-}
+
 .stat-name{
-    flex-basis: 45%;
     text-transform: capitalize;
     font-weight: bold;
 }
-.stat-value{
-    flex-basis: 10%;
-}
+
 .about p{
     display: grid;
-    grid-template-columns: 80px 1fr;
+    grid-template-columns: 30% 70%;
 }
 
 

@@ -176,7 +176,7 @@ async function displayPokemons(callback) { //we are gonna pass different functio
             div.style.backgroundColor = getBackgroundColor(pokemonData.types[0].type.name);
             const typeList = pokemonData.types.map(t => `
                 <button class="typeBtn" style="background-color: ${getAbilityColor(t.type.name)}">
-                <img src="/svg/${t.type.name}.svg" alt="${t.type.name} icon"> 
+                <img src="./svg/${t.type.name}.svg" alt="${t.type.name} icon"> 
                 <span>${t.type.name}</span>
             </button>`).join(' ');
             div.innerHTML = `

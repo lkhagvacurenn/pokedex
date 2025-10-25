@@ -306,10 +306,12 @@ sortSelect.addEventListener('change',e => {
         const closeBtn = moreInfoDiv.querySelector("#moreInfoCloseBtn");
         closeBtn.addEventListener("click", () => {
             moreInfoDiv.classList.remove("active");
+            document.body.style.backgroundColor ="#F5F7FB";
             moreInfoDiv.remove();
         });
         moreInfoDiv.addEventListener("mouseleave", () =>{
             moreInfoDiv.classList.remove("active");
+            document.body.style.backgroundColor ="#F5F7FB";
             moreInfoDiv.remove();
         })
     } catch(error){
@@ -321,7 +323,8 @@ sortSelect.addEventListener('change',e => {
     const pokemonCard = e.target.closest('.pokemon-card');
     if(pokemonCard){
         const pokemonId = e.target.closest('.pokemon-card')?.id.split('-').pop();
+        document.body.style.backgroundColor = "rgba(33,33,33,0.16)";
         renderMoreInfo(pokemonId);
-    }
+    } 
 });
 

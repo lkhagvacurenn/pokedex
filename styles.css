@@ -226,11 +226,11 @@ option::checkmark {
 }
 
 .pokemon-card img{
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    object-fit: cover;
     position: absolute;
     left:50%;
-    transform: translate(-50%, -60%);
+    transform: translate(-50%, -50%);
 }
 .pokemon-card h3{
     text-transform: capitalize; /* Capitalize first letter of name */
@@ -313,7 +313,7 @@ option::checkmark {
     position: relative;
     padding: 0px 30px;
     justify-content: center;
-    margin-top: 20px;
+    margin:20px  0;
     color: var(--whiteBg);
     text-align: left;
     text-transform: capitalize
@@ -326,13 +326,16 @@ option::checkmark {
 }
 #decor-svg-1{
     position: absolute;
-    left: -10%;
+    width: 200px;
+    height: 150px;
+    left: -30%;
     bottom: 0%;
     z-index: 1;
 }
 .moreInfoHeader img{
-    width: 180px;
-    object-fit: cover;
+    width: 150px;
+    object-fit:contain;
+    margin-right: 20px;
 }
 
 .moreInfoContent {

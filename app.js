@@ -167,7 +167,7 @@ async function displayPokemons(callback) {
                 <span>${t.type.name}</span>
             </button>`).join(' ');
             div.innerHTML = `
-                <img src="${pokemonData.sprites.front_default}" alt="${pokemonData.name}">
+                <img src="${pokemonData.sprites.other.dream_world.front_default}" alt="${pokemonData.name}">
                 <h3>${pokemonData.name}</h3>
                 <p>#${formattedId}</p>
                 <svg width="98" height="109" viewBox="0 0 98 109" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -237,7 +237,7 @@ sortSelect.addEventListener('change',e => {
                 <path d="M129.796 102.138C122.324 44.512 73.0596 6.10352e-05 13.3984 0C-46.2626 0.000152588 -95.5257 44.5121 -102.998 102.138H-60.1396C-53.0959 67.9758 -22.8482 42.291 13.3994 42.291C49.6469 42.2911 79.8947 67.9758 86.9385 102.138H129.796ZM13.3984 234.759C73.0595 234.759 122.323 190.248 129.796 132.622H86.9385C79.8946 166.784 49.6469 192.468 13.3994 192.468C-22.8481 192.468 -53.0958 166.784 -60.1396 132.622H-102.998C-95.5257 190.247 -46.2626 234.759 13.3984 234.759Z" fill="white" fill-opacity="0.08"/>
                 </svg>
 
-                <img src="${pokemon.sprites.front_default}" alt="pokemon.name">
+                <img src="${pokemon.sprites.other.dream_world.front_default}" alt="pokemon.name">
                 <div>
                     <p>#${formattedId}</p>
                     <h2>${pokemon.name}</h2>
@@ -259,7 +259,8 @@ sortSelect.addEventListener('change',e => {
         const moreInfoBtnContainer = moreInfoDiv.querySelector('.moreInfoBtnContainer');
         const moreInfoMainContainer = moreInfoDiv.querySelector('.moreInfoMainContainer');
 
-        function displayAbout() {
+        function displayAbout()
+         {
             moreInfoMainContainer.innerHTML = `
                 <div class="about">
                     <p><strong>Species</strong> <span>${pokemon.types.map(t => t.type.name).join(', ')}</span></p>

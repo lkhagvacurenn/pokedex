@@ -228,7 +228,7 @@ sortSelect.addEventListener('change',e => {
         moreInfoDiv.style.backgroundColor = bgClr;
         const typeList = pokemon.types.map(t => `
                 <button class="typeBtn" style="background-color: ${getAbilityColor(t.type.name)}">
-                <img src="/svg/${t.type.name}.svg" alt="${t.type.name} icon"> 
+                <img src="./svg/${t.type.name}.svg" alt="${t.type.name} icon"> 
                 <span>${t.type.name}</span>
             </button>`).join(' ');
 

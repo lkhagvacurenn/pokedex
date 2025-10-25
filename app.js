@@ -13,20 +13,30 @@ const typeFilterContainer = document.getElementById('filter-options');
 const applyFiltersBtn = document.getElementById('apply-filters');
 const searchInput = document.getElementById('search-input');
 const searchBox = document.getElementById('searchbox');
+const logo = document.getElementById('logo');
+
+logo.addEventListener('click' , () => {
+    displayPokemons(getPokemons);
+})
 
 searchBox.addEventListener('submit', async (e) => {
     e.preventDefault();
     const query = searchInput.value.toLowerCase().trim();
     try{
         const allPokemons = await getPokemons();
+        console.log(allPokemons);
+        pokemonsArr = [];
+        console.log(pokemonsArr);
         const filteredPokemons = [];
         for (const pokemon of allPokemons) {
             const pokemonRes = await fetch(pokemon.url);
             const pokemonData = await pokemonRes.json();      
             if(pokemonData.name.includes(query) || String(pokemonData.id) === query || pokemonData.types.some(t => t.type.name === query)){
                 filteredPokemons.push(pokemon);
+               
             } 
         }
+        console.log(pokemonsArr);
         if(filteredPokemons.length === 0){
             pokemonContainer.innerHTML = `
             <div class="no-results">
@@ -83,7 +93,8 @@ applyFiltersBtn.addEventListener('click', async () => {
         }
     });
     try{
-        const allPokemons = await getPokemons();
+        const allPokemons = pokemonsArr;
+        pokemonsArr =[];
         const filteredPokemons = [];
 
         for (const pokemon of allPokemons) {
@@ -126,18 +137,24 @@ filterBtn.addEventListener('click', () => {
 });
 
 
-
-
+var pokemonsArr = [];
 
 async function displayPokemons(callback) {
-    pokemonContainer.innerHTML = '';
+    pokemonContainer.innerHTML = `<p>loading</p>`;
     // Fetch and display pokemons based on filters
     try{
+        
         const pokemons = await callback();
         const types = [];
+        pokemonContainer.innerHTML = ``;
         for (const p of pokemons){
             const pokemonRes = await fetch(p.url);
             const pokemonData = await pokemonRes.json();
+            pokemonsArr.push({
+                id : pokemonData.id,
+                name : p.name,
+                url : p.url
+            });
             types.push(...pokemonData.types.map(t => t.type.name));
             const div = document.createElement('div');
             div.classList.add('pokemon-card');
@@ -172,12 +189,14 @@ displayPokemons(getPokemons);
 
 
 
-sortSelect.addEventListener('change', async e => {
+sortSelect.addEventListener('change',e => {
     try{
-        var pokemons = await getPokemons();
+        var pokemons =  pokemonsArr;
+        pokemonsArr =[];
         console.log(pokemons);
-        const value = e.target.value;
-        if (value === 'number-desc') pokemons.reverse();
+        const value = e.target.value; 
+        if(value == 'number-asc') pokemons.sort((a,b) => a.id-b.id);
+        else if(value === 'number-desc') pokemons.sort((a,b) => b.id-a.id);
         else if (value === 'name-asc') pokemons.sort((a, b) => a.name.localeCompare(b.name));
         else if (value === 'name-desc') pokemons.sort((a, b) => b.name.localeCompare(a.name));
         displayPokemons(() => Promise.resolve(pokemons));
@@ -185,11 +204,6 @@ sortSelect.addEventListener('change', async e => {
         console.error("Error fetching pokemons for sorting:", error);
     }
   });
-
-
-
-
-
 
 
 
